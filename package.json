@@ -1,24 +1,28 @@
 {
-  "name": "gighop-backend",
-  "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/StuartJauncey/GigHop-Backend.git"
-  },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/StuartJauncey/GigHop-Backend/issues"
-  },
-  "homepage": "https://github.com/StuartJauncey/GigHop-Backend#readme",
-  "dependencies": {
-    "express": "^4.17.1",
-    "mongodb": "^4.2.1"
-  }
+	"name": "gighop-backend",
+	"version": "1.0.0",
+	"description": "",
+	"main": "index.js",
+	"scripts": {
+		"test": "echo \"Error: no test specified\" && exit 1",
+		"start": "nodemon server.js"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/StuartJauncey/GigHop-Backend.git"
+	},
+	"keywords": [],
+	"author": "",
+	"license": "ISC",
+	"bugs": {
+		"url": "https://github.com/StuartJauncey/GigHop-Backend/issues"
+	},
+	"homepage": "https://github.com/StuartJauncey/GigHop-Backend#readme",
+	"dependencies": {
+		"cors": "^2.8.5",
+		"dotenv": "^10.0.0",
+		"express": "^4.17.1",
+		"mongodb": "^4.2.1",
+		"nodemon": "^2.0.15"
+	}
 }
