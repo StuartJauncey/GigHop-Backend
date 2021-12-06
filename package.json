@@ -1,0 +1,23 @@
+{
+  "name": "gighop-backend",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/StuartJauncey/GigHop-Backend.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/StuartJauncey/GigHop-Backend/issues"
+  },
+  "homepage": "https://github.com/StuartJauncey/GigHop-Backend#readme",
+  "dependencies": {
+    "express": "^4.17.1"
+  }
+}
