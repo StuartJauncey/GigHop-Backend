@@ -1,7 +1,8 @@
 // Helps us connect to database
 const dbo = require("../connection");
 
-exports.getAllVenues = (req, res, next) => {
+exports.getAllVenues = (req, res) => {
+	console.log(process.env.ATLAS_URI);
 	const dbConnect = dbo.getDb();
 
 	dbConnect

@@ -1,7 +1,5 @@
 const { MongoClient } = require("mongodb");
-const connectionString =
-	"mongodb+srv://GigHop:Northcoders@cluster0.4pau2.mongodb.net/GigHop?retryWrites=true&w=majority";
-
+const connectionString = process.env.ATLAS_URI;
 const client = new MongoClient(connectionString, {
 	useNewUrlParser: true,
 	useUnifiedTopology: true,
