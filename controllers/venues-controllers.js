@@ -52,11 +52,9 @@ exports.patchVenueWithEvent = async (req, res) => {
 	const updateObject = req.body;
 	const id = req.params.venue_id;
 
-	console.log(id);
-
 	await dbConnect.collection("Venues").updateOne(
 		{ _id: ObjectId(id) },
-		// UPDATE OBJECT IN REQUEST: { "upcoming_events": "Another event" }
+		// UPDATE OBJECT IN REQUEST: { "upcoming_events": "<event_id>" }
 		{ $push: updateObject },
 		function (err, _result) {
 			if (err) {
@@ -69,4 +67,23 @@ exports.patchVenueWithEvent = async (req, res) => {
 			}
 		}
 	);
+};
+
+exports.deleteEvent = async (req, res) => {
+	const dbConnect = dbo.getDb();
+
+	const id = req.params.venue_id;
+
+	await dbConnect
+		.collection("Venues")
+		.deleteOne({ _id: ObjectId(id) }, function (err, _result) {
+			if (_result.deletedCount === 0) {
+				res.status(400).send("No venue to delete");
+			} else if (err) {
+				res.status(400).send(`Error deleting venue with id!`);
+			} else {
+				console.log("Document deleted");
+				res.status(204).send();
+			}
+		});
 };
