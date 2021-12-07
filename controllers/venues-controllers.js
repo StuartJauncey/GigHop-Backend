@@ -69,7 +69,7 @@ exports.patchVenueWithEvent = async (req, res) => {
 	);
 };
 
-exports.deleteEvent = async (req, res) => {
+exports.deleteVenue = async (req, res) => {
 	const dbConnect = dbo.getDb();
 
 	const id = req.params.venue_id;
