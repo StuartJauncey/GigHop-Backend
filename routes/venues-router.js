@@ -1,9 +1,9 @@
 const {
-  getAllVenues,
-  postNewVenue,
-  patchVenue,
-  deleteVenue,
-  getVenue
+	getAllVenues,
+	postNewVenue,
+	patchVenue,
+	deleteVenue,
+	getVenue,
 } = require("../controllers/venues-controllers");
 
 const venuesRouter = require("express").Router();
