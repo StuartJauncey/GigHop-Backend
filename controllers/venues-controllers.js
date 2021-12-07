@@ -16,6 +16,21 @@ exports.getAllVenues = (req, res) => {
 		});
 };
 
+exports.getVenue = (req, res) => {
+	const dbConnect = dbo.getDb();
+
+	const id = req.params.venue_id;
+
+	dbConnect
+		// Specify the collection(table) we want data from
+		.collection("Venues")
+		// GET specific data from the collection
+		.findOne({ _id: ObjectId(id) })
+		.then((result) => {
+			res.status(200).send(result);
+		});
+};
+
 exports.postNewVenue = async (req, res) => {
 	const dbConnect = dbo.getDb();
 	const newObj = req.body;
