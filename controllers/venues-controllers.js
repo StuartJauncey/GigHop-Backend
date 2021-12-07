@@ -59,7 +59,7 @@ exports.postNewVenue = async (req, res) => {
   });
 };
 
-exports.patchVenueWithEvent = async (req, res) => {
+exports.patchVenue = async (req, res) => {
   const dbConnect = dbo.getDb();
 
   const updateObject = req.body;

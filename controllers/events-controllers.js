@@ -66,3 +66,122 @@ exports.deleteEvent = async (req, res) => {
       }
     });
 };
+
+exports.patchEvent = async (req, res) => {
+  const dbConnect = dbo.getDb();
+  const updateObject = req.body;
+  const id = req.params.event_id;
+
+  if (updateObject.hasOwnProperty("authorised")) {
+    if (
+      updateObject.authorised.hasOwnProperty("artist") ||
+      updateObject.authorised.hasOwnProperty("venue")
+    ) {
+      if (
+        typeof updateObject.authorised.artist === "boolean" ||
+        updateObject.authorised.venue === "boolean"
+      ) {
+        await dbConnect.collection("Events").updateOne({
+          _id: ObjectId(id)
+        }, { $set: updateObject }, function(err, _result) {
+          if (err) {
+            res.status(400).send("Error updating events on venue with id 1!");
+          } else {
+            console.log("Document updated");
+            res.status(200).send(req.body);
+          }
+        });
+      }
+    }
+  }
+
+  if (updateObject.hasOwnProperty("entry_price")) {
+    if (updateObject.entry_price.hasOwnProperty("$numberDecimal")) {
+      await dbConnect.collection("Events").updateOne({
+        _id: ObjectId(id)
+      }, { $set: updateObject }, function(err, _result) {
+        if (err) {
+          res.status(400).send("Error updating events on venue with id 1!");
+        } else {
+          console.log("Document updated");
+          res.status(200).send(req.body);
+        }
+      });
+    }
+  }
+
+  if (updateObject.hasOwnProperty("artists_ids")) {
+    await dbConnect.collection("Events").updateOne({
+      _id: ObjectId(id)
+    }, { $push: updateObject }, function(err, _result) {
+      // UPDATE OBJECT IN REQUEST: { "upcoming_events": "<event_id>" }
+      if (err) {
+        res.status(400).send(`Error updating artists on events with id 1!`);
+      } else {
+        console.log("Document updated");
+        res.status(200).send(req.body);
+      }
+    });
+  }
+
+  if (
+    !updateObject.hasOwnProperty("venue_id") &&
+    !updateObject.hasOwnProperty("description") &&
+    !updateObject.hasOwnProperty("picture") &&
+    !updateObject.hasOwnProperty("user_id") &&
+    !updateObject.hasOwnProperty("time_end") &&
+    !updateObject.hasOwnProperty("time_start") &&
+    !updateObject.hasOwnProperty("event_name")
+  ) {
+    return res.status(400).send(`Error updating events on venue with id 3!`);
+  }
+  await dbConnect.collection("Venues").updateOne({
+    _id: ObjectId(id)
+  }, { $set: updateObject }, function(err, _result) {
+    if (err) {
+      res.status(400).send(`Error updating events on venue with id 2!`);
+    } else {
+      console.log("Document updated");
+      res.status(200).send(req.body);
+    }
+  });
+};
+
+// exports.patchVenue = async (req, res) => {
+//     const dbConnect = dbo.getDb();
+
+//     const updateObject = req.body;
+//     const id = req.params.venue_id;
+//     if (updateObject.hasOwnProperty("upcoming_events")) {
+//       await dbConnect.collection("Venues").updateOne({
+//         _id: ObjectId(id)
+//       }, { $push: updateObject }, function(err, _result) {
+//         // UPDATE OBJECT IN REQUEST: { "upcoming_events": "<event_id>" }
+//         if (err) {
+//           res.status(400).send(`Error updating events on venue with id 1!`);
+//         } else {
+//           console.log("Document updated");
+//           res.status(200).send(req.body);
+//         }
+//       });
+//     }
+
+//     if (
+//       !updateObject.hasOwnProperty("venue_name") &&
+//       !updateObject.hasOwnProperty("description") &&
+//       !updateObject.hasOwnProperty("picture") &&
+//       !updateObject.hasOwnProperty("address")
+//     ) {
+//       return res.status(400).send(`Error updating events on venue with id 3!`);
+//     }
+//     await dbConnect.collection("Venues").updateOne({
+//       _id: ObjectId(id)
+//     }, { $set: updateObject }, function(err, _result) {
+//       if (err) {
+//         res.status(400).send(`Error updating events on venue with id 2!`);
+//       } else {
+//         console.log("Document updated");
+//         res.status(200).send(req.body);
+//       }
+//     });
+//   };
