@@ -174,49 +174,6 @@ exports.patchEvent = async (req, res) => {
     });
   }
 
-  // if (updateObject.hasOwnProperty("artist_id")) {
-
-  //   for (let i = 0; i < event.artists_ids.length; i++) {
-  //     const artist = event.artists_ids[i];
-  //     if (artist.artist_id === updateObject.artist_id) {
-  //       return await dbConnect.collection("Events").findOneAndUpdate({
-  //         _id: ObjectId(id)
-  //       }, {
-  //         $pull: {
-  //           artists_ids: {
-  //             artist_id: updateObject.artist_id
-  //           }
-  //         }
-  //       }, function(err, _result) {
-  //         // OBJECT IN REQUEST: { "artist_id": "test" }
-  //         if (err) {
-  //           return res
-  //             .status(400)
-  //             .send(`Error updating artists on events with id 1!`);
-  //         } else {
-  //           console.log("Artist removed");
-  //           return res.status(200).send();
-  //         }
-  //       });
-  //     }
-  //   }
-  //   return await dbConnect.collection("Events").updateOne({
-  //     _id: ObjectId(id)
-  //   }, {
-  //     $push: { artists_ids: updateObject }
-  //   }, function(err, _result) {
-  //     // UPDATE OBJECT IN REQUEST: { "artist_id": "testing" }
-  //     if (err) {
-  //       return res
-  //         .status(400)
-  //         .send(`Error updating artists on events with id 1!`);
-  //     } else {
-  //       console.log("ARTIST ADDED - Document updated");
-  //       return res.status(200).send(req.body);
-  //     }
-  //   });
-  // }
-
   if (
     !updateObject.hasOwnProperty("artist_id") &&
     !updateObject.hasOwnProperty("venue_id") &&
