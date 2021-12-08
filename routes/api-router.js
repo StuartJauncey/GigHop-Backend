@@ -1,8 +1,7 @@
 const venuesRouter = require("./venues-router");
 const eventsRouter = require("./events-router");
-
+const usersRouter = require("./users-router");
 const artistsRouter = require("./artists-router");
-
 
 // Create instance of express router
 const apiRouter = require("express").Router();
