@@ -11,7 +11,9 @@ const PORT = process.env.PORT || 8080;
 const uri = process.env.MONGODB_URI;
 const app = express();
 
-console.log(process.env.PORT);
+console.log(process.env.PORT, "here", PORT);
+console.log(process.env.MONGODB_URI);
+console.log(process.env.ATLAS_URI);
 
 app.use(cors());
 app.use(express.json());
