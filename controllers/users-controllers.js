@@ -90,7 +90,7 @@ exports.patchUsers = async (req, res) => {
         return res.status(400).send("event already in there");
       }
     }
-    await dbConnect.collection("Users").updateOne({
+    return await dbConnect.collection("Users").updateOne({
       _id: ObjectId(id)
     }, {
       $push: {
@@ -107,7 +107,7 @@ exports.patchUsers = async (req, res) => {
   }
 
   if (updateObject.hasOwnProperty("remove_event")) {
-    await dbConnect.collection("Users").findOneAndUpdate({
+    return await dbConnect.collection("Users").findOneAndUpdate({
       _id: ObjectId(id)
     }, {
       $pull: {

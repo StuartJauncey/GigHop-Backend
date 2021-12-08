@@ -80,6 +80,15 @@ exports.patchEvent = async (req, res) => {
   const updateObject = req.body;
   const id = req.params.event_id;
 
+  let event;
+
+  await dbConnect
+    .collection("Events")
+    .findOne({ _id: ObjectId(id) })
+    .then(result => {
+      event = result;
+    });
+
   if (updateObject.hasOwnProperty("authorised")) {
     if (
       updateObject.authorised.hasOwnProperty("artist") ||
@@ -87,7 +96,7 @@ exports.patchEvent = async (req, res) => {
     ) {
       if (
         typeof updateObject.authorised.artist === "boolean" ||
-        updateObject.authorised.venue === "boolean"
+        typeof updateObject.authorised.venue === "boolean"
       ) {
         await dbConnect.collection("Events").updateOne({
           _id: ObjectId(id)
@@ -122,56 +131,91 @@ exports.patchEvent = async (req, res) => {
     }
   }
 
-  if (updateObject.hasOwnProperty("artist_id")) {
-    let event = {};
-
-    await dbConnect
-      .collection("Events")
-      .findOne({ _id: ObjectId(id) })
-      .then(result => {
-        event = result;
-      });
-
+  if (updateObject.hasOwnProperty("add_artist")) {
     for (let i = 0; i < event.artists_ids.length; i++) {
-      const artist = event.artists_ids[i];
-      if (artist.artist_id === updateObject.artist_id) {
-        return await dbConnect.collection("Events").findOneAndUpdate({
-          _id: ObjectId(id)
-        }, {
-          $pull: {
-            artists_ids: {
-              artist_id: updateObject.artist_id
-            }
-          }
-        }, function(err, _result) {
-          // OBJECT IN REQUEST: { "artist_id": "test" }
-          if (err) {
-            return res
-              .status(400)
-              .send(`Error updating artists on events with id 1!`);
-          } else {
-            console.log("Artist removed");
-            return res.status(200).send();
-          }
-        });
+      if (
+        event.artists_ids[i].artist_id ===
+        updateObject.add_artist.artist_id
+      ) {
+        return res.status(400).send("artist already in there");
       }
     }
     return await dbConnect.collection("Events").updateOne({
       _id: ObjectId(id)
     }, {
-      $push: { artists_ids: updateObject }
+      $push: {
+        artists_ids: updateObject.add_artist
+      }
     }, function(err, _result) {
-      // UPDATE OBJECT IN REQUEST: { "artist_id": "testing" }
       if (err) {
-        return res
-          .status(400)
-          .send(`Error updating artists on events with id 1!`);
+        res.status(400).send(`Error updating events on artist`);
       } else {
-        console.log("ARTIST ADDED - Document updated");
-        return res.status(200).send(req.body);
+        console.log("artist added to event");
+        res.status(200).send(updateObject.add_artist);
       }
     });
   }
+
+  console.log(updateObject.remove_artist);
+
+  if (updateObject.hasOwnProperty("remove_artist")) {
+    return await dbConnect.collection("Events").findOneAndUpdate({
+      _id: ObjectId(id)
+    }, {
+      $pull: {
+        artists_ids: updateObject.remove_artist
+      }
+    }, function(err, _result) {
+      if (err) {
+        return res.status(400).send("Error removing artist");
+      } else {
+        return res.status(200).send();
+      }
+    });
+  }
+
+  // if (updateObject.hasOwnProperty("artist_id")) {
+
+  //   for (let i = 0; i < event.artists_ids.length; i++) {
+  //     const artist = event.artists_ids[i];
+  //     if (artist.artist_id === updateObject.artist_id) {
+  //       return await dbConnect.collection("Events").findOneAndUpdate({
+  //         _id: ObjectId(id)
+  //       }, {
+  //         $pull: {
+  //           artists_ids: {
+  //             artist_id: updateObject.artist_id
+  //           }
+  //         }
+  //       }, function(err, _result) {
+  //         // OBJECT IN REQUEST: { "artist_id": "test" }
+  //         if (err) {
+  //           return res
+  //             .status(400)
+  //             .send(`Error updating artists on events with id 1!`);
+  //         } else {
+  //           console.log("Artist removed");
+  //           return res.status(200).send();
+  //         }
+  //       });
+  //     }
+  //   }
+  //   return await dbConnect.collection("Events").updateOne({
+  //     _id: ObjectId(id)
+  //   }, {
+  //     $push: { artists_ids: updateObject }
+  //   }, function(err, _result) {
+  //     // UPDATE OBJECT IN REQUEST: { "artist_id": "testing" }
+  //     if (err) {
+  //       return res
+  //         .status(400)
+  //         .send(`Error updating artists on events with id 1!`);
+  //     } else {
+  //       console.log("ARTIST ADDED - Document updated");
+  //       return res.status(200).send(req.body);
+  //     }
+  //   });
+  // }
 
   if (
     !updateObject.hasOwnProperty("artist_id") &&
