@@ -52,3 +52,21 @@ exports.postNewArtist = async (req, res) => {
       res.status(204).send(result);
     })
 }
+
+exports.deleteArtist = async (req, res) => {
+  const dbConnect = dbo.getDb();
+  const id = req.params.artist_id;
+
+  await dbConnect
+    .collection("Artists")
+    .deleteOne({ _id: ObjectId(id) })
+    .then((result) => {
+      console.log(result);
+      if (result.deletedCount === 0) {
+				res.status(400).send("No event to delete");
+			} else {
+				console.log("Document deleted");
+				res.status(204).send();
+			}
+    })
+}
