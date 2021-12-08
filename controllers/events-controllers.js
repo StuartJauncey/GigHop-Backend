@@ -132,9 +132,6 @@ exports.patchEvent = async (req, res) => {
         event = result;
       });
 
-    console.log(event.artists_ids);
-    console.log(event.artists_ids.includes(updateObject));
-
     for (let i = 0; i < event.artists_ids.length; i++) {
       const artist = event.artists_ids[i];
       if (artist.artist_id === updateObject.artist_id) {

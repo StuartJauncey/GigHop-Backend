@@ -44,11 +44,7 @@ exports.postNewVenue = async (req, res) => {
   ];
 
   for (let i = 0; i < expectedKeys.length; i++) {
-    if (
-      !Object.keys(newObj).includes(
-        expectedKeys[i]
-      )
-    ) {
+    if (!Object.keys(newObj).includes(expectedKeys[i])) {
       return res.status(400).send({
         status: 400,
         message: "Invalid Data Key"
@@ -60,14 +56,10 @@ exports.postNewVenue = async (req, res) => {
     .collection("Venues")
     .insertOne(newObj, function(err, result) {
       if (err) {
-        res
-          .status(400)
-          .send("Error inserting matches!");
+        res.status(400).send("Error inserting matches!");
       } else {
-        console.log(
-          `Added a new match with id ${result.insertedId}`
-        );
-        res.status(204).send(newObj);
+        console.log(`Added a new match with id ${result.insertedId}`);
+        res.status(201).send(newObj);
       }
     });
 };
@@ -77,31 +69,73 @@ exports.patchVenue = async (req, res) => {
 
   const updateObject = req.body;
   const id = req.params.venue_id;
-  if (
-    updateObject.hasOwnProperty("upcoming_events")
-  ) {
-    await dbConnect
-      .collection("Venues")
-      .updateOne(
-        {
-          _id: ObjectId(id)
-        },
-        { $push: updateObject },
-        function(err, _result) {
-          // UPDATE OBJECT IN REQUEST: { "upcoming_events": "<event_id>" }
-          if (err) {
-            res
-              .status(400)
-              .send(
-                `Error updating events on venue with id 1!`
-              );
-          } else {
-            console.log("Document updated");
-            res.status(200).send(req.body);
-          }
-        }
-      );
+
+  let venue;
+
+  await dbConnect
+    .collection("Venues")
+    .findOne({ _id: ObjectId(id) })
+    .then(result => {
+      venue = result;
+    });
+  if (updateObject.hasOwnProperty("add_event")) {
+    for (let i = 0; i < venue.upcoming_events.length; i++) {
+      if (
+        venue.upcoming_events[i].event_id ===
+        updateObject.add_event.event_id
+      ) {
+        return res.status(400).send("event already in there");
+      }
+    }
+    return await dbConnect.collection("Venues").updateOne({
+      _id: ObjectId(id)
+    }, {
+      $push: {
+        upcoming_events: updateObject.add_event
+      }
+    }, function(err, _result) {
+      if (err) {
+        return res.status(400).send(`Error updating events on user`);
+      } else {
+        console.log("Event added to venue");
+        return res.status(200).send(updateObject.add_event);
+      }
+    });
   }
+
+  if (updateObject.hasOwnProperty("remove_event")) {
+    return await dbConnect.collection("Venues").findOneAndUpdate({
+      _id: ObjectId(id)
+    }, {
+      $pull: {
+        upcoming_events: updateObject.remove_event
+      }
+    }, function(err, _result) {
+      if (err) {
+        console.log("noooo");
+        return res.status(400).send("Error removing event");
+      } else {
+        console.log("yesss");
+        return res.status(200).send();
+      }
+    });
+  }
+
+  // if (updateObject.hasOwnProperty("upcoming_events")) {
+  //   await dbConnect.collection("Venues").updateOne({
+  //     _id: ObjectId(id)
+  //   }, { $push: updateObject }, function(err, _result) {
+  //     // UPDATE OBJECT IN REQUEST: { "upcoming_events": "<event_id>" }
+  //     if (err) {
+  //       return res
+  //         .status(400)
+  //         .send(`Error updating events on venue with id 1!`);
+  //     } else {
+  //       console.log("Document updated");
+  //       return res.status(200).send(req.body);
+  //     }
+  //   });
+  // }
 
   if (
     !updateObject.hasOwnProperty("venue_name") &&
@@ -111,25 +145,18 @@ exports.patchVenue = async (req, res) => {
   ) {
     return res
       .status(400)
-      .send(
-        `Error updating events on venue with id 3!`
-      );
+      .send(`Error updating events on venue with id 3!`);
   }
-  await dbConnect.collection("Venues").updateOne({
+  return await dbConnect.collection("Venues").updateOne({
     _id: ObjectId(id)
-  }, { $set: updateObject }, function(
-    err,
-    _result
-  ) {
+  }, { $set: updateObject }, function(err, _result) {
     if (err) {
-      res
+      return res
         .status(400)
-        .send(
-          `Error updating events on venue with id 2!`
-        );
+        .send(`Error updating events on venue with id 2!`);
     } else {
       console.log("Document updated");
-      res.status(200).send(req.body);
+      return res.status(200).send(req.body);
     }
   });
 };
@@ -141,18 +168,11 @@ exports.deleteVenue = async (req, res) => {
 
   await dbConnect
     .collection("Venues")
-    .deleteOne({ _id: ObjectId(id) }, function(
-      err,
-      _result
-    ) {
+    .deleteOne({ _id: ObjectId(id) }, function(err, _result) {
       if (_result.deletedCount === 0) {
-        res
-          .status(400)
-          .send("No venue to delete");
+        res.status(400).send("No venue to delete");
       } else if (err) {
-        res
-          .status(400)
-          .send(`Error deleting venue with id!`);
+        res.status(400).send(`Error deleting venue with id!`);
       } else {
         console.log("Document deleted");
         res.status(204).send();

@@ -72,9 +72,7 @@ exports.patchUsers = async (req, res) => {
   const dbConnect = dbo.getDb();
 
   const updateObject = req.body;
-  console.log(updateObject.add_event, updateObject);
   const id = req.params.user_id;
-  console.log(id);
 
   let user;
 
@@ -84,7 +82,6 @@ exports.patchUsers = async (req, res) => {
     .then(result => {
       user = result;
     });
-  console.log(user);
   if (updateObject.hasOwnProperty("add_event")) {
     for (let i = 0; i < user.events.length; i++) {
       if (
