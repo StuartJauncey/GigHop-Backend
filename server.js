@@ -11,6 +11,8 @@ const PORT = process.env.PORT || 8080;
 const uri = process.env.MONGODB_URI;
 const app = express();
 
+console.log(process.env.PORT);
+
 app.use(cors());
 app.use(express.json());
 
@@ -31,7 +33,7 @@ dbo.connectToServer(function(err) {
   }
 
   // Start Express server
-  app.listen(uri, () => {
-    console.log(`Server running on port: ${uri}`);
+  app.listen(PORT, () => {
+    console.log(`Server running on port: ${PORT}`);
   });
 });
