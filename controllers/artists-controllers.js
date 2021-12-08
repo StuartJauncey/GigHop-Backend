@@ -48,8 +48,12 @@ exports.postNewArtist = async (req, res) => {
     .collection("Artists")
     .insertOne(newArtist)
     .then((result) => {
-      console.log("Added new artist")
-      res.status(204).send(result);
+      if (result.acknowledged) {
+        res.status(201).send(newArtist);
+      } else {
+        res.status(400).send("Something went wrong")
+      }
+      
     })
 }
 
@@ -69,4 +73,28 @@ exports.deleteArtist = async (req, res) => {
 				res.status(204).send();
 			}
     })
+}
+
+exports.patchArtist = async (req, res) => {
+  const dbConnect = dbo.getDb();
+  const id = req.params.artist_id;
+  const updatedArtist = req.body;
+  
+  if (updatedArtist.hasOwnProperty("artist_name") || updatedArtist.hasOwnProperty("description") || updatedArtist.hasOwnProperty("picture")) {
+    await dbConnect
+      .collection("Artists")
+      .updateOne(
+        { _id: ObjectId(id) },
+        { $set: updatedArtist }
+      )
+      .then((result) => {
+        if (result.modifiedCount !== 0) {
+          return res.status(200).send(updatedArtist);
+        } else {
+          return res.status(400).send("Artist not modified");
+        }
+      })
+  } else {
+    return res.status(400).send("Invalid Update Syntax")
+  }
 }
