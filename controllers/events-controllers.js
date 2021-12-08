@@ -98,37 +98,41 @@ exports.patchEvent = async (req, res) => {
         typeof updateObject.authorised.artist === "boolean" ||
         typeof updateObject.authorised.venue === "boolean"
       ) {
-        await dbConnect.collection("Events").updateOne({
-          _id: ObjectId(id)
-        }, { $set: updateObject }, function(err, _result) {
-          if (err) {
-            res
-              .status(400)
-              .send("Error updating events on venue with id 1!");
-          } else {
-            console.log("Document updated");
-            res.status(200).send(req.body);
-          }
-        });
+        return await dbConnect
+          .collection("Events")
+          .updateOne(
+            {
+              _id: ObjectId(id)
+            },
+            { $set: updateObject }
+          )
+          .then(result => {
+            if (result.modifiedCount !== 0) {
+              res.status(200).send(updateObject);
+            } else {
+              res.status(400).send("No content updated.");
+            }
+          });
       }
     }
   }
 
   if (updateObject.hasOwnProperty("entry_price")) {
-    if (updateObject.entry_price.hasOwnProperty("$numberDecimal")) {
-      await dbConnect.collection("Events").updateOne({
-        _id: ObjectId(id)
-      }, { $set: updateObject }, function(err, _result) {
-        if (err) {
-          res
-            .status(400)
-            .send("Error updating events on venue with id 1!");
+    return await dbConnect
+      .collection("Events")
+      .updateOne(
+        {
+          _id: ObjectId(id)
+        },
+        { $set: updateObject }
+      )
+      .then(result => {
+        if (result.modifiedCount !== 0) {
+          return res.status(200).send(result);
         } else {
-          console.log("Document updated");
-          res.status(200).send(req.body);
+          return res.status(400).send("entry price not modified");
         }
       });
-    }
   }
 
   if (updateObject.hasOwnProperty("add_artist")) {
@@ -156,7 +160,7 @@ exports.patchEvent = async (req, res) => {
     });
   }
 
-  console.log(updateObject.remove_artist);
+  console.log(updateObject);
 
   if (updateObject.hasOwnProperty("remove_artist")) {
     return await dbConnect.collection("Events").findOneAndUpdate({
@@ -188,16 +192,23 @@ exports.patchEvent = async (req, res) => {
       .status(400)
       .send(`Error updating events on venue with id 3!`);
   }
-  await dbConnect.collection("Venues").updateOne({
-    _id: ObjectId(id)
-  }, { $set: updateObject }, function(err, _result) {
-    if (err) {
-      res
-        .status(400)
-        .send(`Error updating events on venue with id 2!`);
-    } else {
-      console.log("Document updated");
-      res.status(200).send(req.body);
-    }
-  });
+
+  console.log(updateObject);
+  return await dbConnect
+    .collection("Events")
+    .updateOne(
+      {
+        _id: ObjectId(id)
+      },
+      { $set: updateObject }
+    )
+    .then(result => {
+      if (result.modifiedCount === 0) {
+        res
+          .status(400)
+          .send(`Error updating events on venue with id 2!`);
+      } else {
+        res.status(200).send(result);
+      }
+    });
 };
