@@ -1,9 +1,11 @@
 const { MongoClient } = require("mongodb");
-const ConnectionString = process.env.ATLAS_URI;
+const ConnectionString = process.env.MONGODB_URI;
 const client = new MongoClient(ConnectionString, {
   useNewUrlParser: true,
   useUnifiedTopology: true
 });
+
+console.log(process.env.ATLAS_URI);
 
 let dbConnection;
 
