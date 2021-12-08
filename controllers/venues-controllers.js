@@ -49,12 +49,10 @@ exports.postNewVenue = async (req, res) => {
         expectedKeys[i]
       )
     ) {
-      return res
-        .status(400)
-        .send({
-          status: 400,
-          message: "Invalid Data Key"
-        });
+      return res.status(400).send({
+        status: 400,
+        message: "Invalid Data Key"
+      });
     }
   }
 

@@ -11,9 +11,12 @@ exports.getAllEvents = (req, res) => {
 exports.getEvent = (req, res) => {
   const dbConnect = dbo.getDb();
   const id = req.params.event_id;
-  dbConnect.collection("Events").findOne({ _id: ObjectId(id) }).then(result => {
-    return res.status(200).send(result);
-  });
+  dbConnect
+    .collection("Events")
+    .findOne({ _id: ObjectId(id) })
+    .then(result => {
+      return res.status(200).send(result);
+    });
 };
 
 exports.postNewEvent = async (req, res) => {
@@ -34,18 +37,23 @@ exports.postNewEvent = async (req, res) => {
 
   for (let i = 0; i < expectedKeys.length; i++) {
     if (!Object.keys(newObj).includes(expectedKeys[i])) {
-      return res.status(400).send({ status: 400, message: "Invalid Data Key" });
+      return res.status(400).send({
+        status: 400,
+        message: "Invalid Data Key"
+      });
     }
   }
 
-  await dbConnect.collection("Events").insertOne(newObj, function(err, result) {
-    if (err) {
-      res.status(400).send("Error inserting matches!");
-    } else {
-      console.log(`Added a new match with id ${result.insertedId}`);
-      res.status(204).send(newObj);
-    }
-  });
+  await dbConnect
+    .collection("Events")
+    .insertOne(newObj, function(err, result) {
+      if (err) {
+        res.status(400).send("Error inserting matches!");
+      } else {
+        console.log(`Added a new match with id ${result.insertedId}`);
+        res.status(204).send(newObj);
+      }
+    });
 };
 
 exports.deleteEvent = async (req, res) => {
@@ -85,7 +93,9 @@ exports.patchEvent = async (req, res) => {
           _id: ObjectId(id)
         }, { $set: updateObject }, function(err, _result) {
           if (err) {
-            res.status(400).send("Error updating events on venue with id 1!");
+            res
+              .status(400)
+              .send("Error updating events on venue with id 1!");
           } else {
             console.log("Document updated");
             res.status(200).send(req.body);
@@ -101,7 +111,9 @@ exports.patchEvent = async (req, res) => {
         _id: ObjectId(id)
       }, { $set: updateObject }, function(err, _result) {
         if (err) {
-          res.status(400).send("Error updating events on venue with id 1!");
+          res
+            .status(400)
+            .send("Error updating events on venue with id 1!");
         } else {
           console.log("Document updated");
           res.status(200).send(req.body);
@@ -129,7 +141,11 @@ exports.patchEvent = async (req, res) => {
         return await dbConnect.collection("Events").findOneAndUpdate({
           _id: ObjectId(id)
         }, {
-          $pull: { artists_ids: { artist_id: updateObject.artist_id } }
+          $pull: {
+            artists_ids: {
+              artist_id: updateObject.artist_id
+            }
+          }
         }, function(err, _result) {
           // OBJECT IN REQUEST: { "artist_id": "test" }
           if (err) {
@@ -170,13 +186,17 @@ exports.patchEvent = async (req, res) => {
     !updateObject.hasOwnProperty("time_start") &&
     !updateObject.hasOwnProperty("event_name")
   ) {
-    return res.status(400).send(`Error updating events on venue with id 3!`);
+    return res
+      .status(400)
+      .send(`Error updating events on venue with id 3!`);
   }
   await dbConnect.collection("Venues").updateOne({
     _id: ObjectId(id)
   }, { $set: updateObject }, function(err, _result) {
     if (err) {
-      res.status(400).send(`Error updating events on venue with id 2!`);
+      res
+        .status(400)
+        .send(`Error updating events on venue with id 2!`);
     } else {
       console.log("Document updated");
       res.status(200).send(req.body);
