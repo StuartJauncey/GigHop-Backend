@@ -8,6 +8,7 @@ const cors = require("cors");
 const dbo = require("./connection");
 
 const PORT = process.env.PORT || 8080;
+const uri = process.env.MONGODB_URI;
 const app = express();
 
 app.use(cors());
@@ -17,20 +18,20 @@ app.use(express.json());
 app.use("/api", apiRouter);
 
 // Error Handling
-app.use(function (err, req, res, next) {
-	console.error(err.stack);
-	res.status(500).send("Server error");
+app.use(function(err, req, res, next) {
+  console.error(err.stack);
+  res.status(500).send("Server error");
 });
 
 // Connect to database when server starts
-dbo.connectToServer(function (err) {
-	if (err) {
-		console.error(err);
-		process.exit();
-	}
+dbo.connectToServer(function(err) {
+  if (err) {
+    console.error(err);
+    process.exit();
+  }
 
-	// Start Express server
-	app.listen(PORT, () => {
-		console.log(`Server running on port: ${PORT}`);
-	});
+  // Start Express server
+  app.listen(uri, () => {
+    console.log(`Server running on port: ${uri}`);
+  });
 });
