@@ -112,30 +112,12 @@ exports.patchVenue = async (req, res) => {
       }
     }, function(err, _result) {
       if (err) {
-        console.log("noooo");
         return res.status(400).send("Error removing event");
       } else {
-        console.log("yesss");
         return res.status(200).send();
       }
     });
   }
-
-  // if (updateObject.hasOwnProperty("upcoming_events")) {
-  //   await dbConnect.collection("Venues").updateOne({
-  //     _id: ObjectId(id)
-  //   }, { $push: updateObject }, function(err, _result) {
-  //     // UPDATE OBJECT IN REQUEST: { "upcoming_events": "<event_id>" }
-  //     if (err) {
-  //       return res
-  //         .status(400)
-  //         .send(`Error updating events on venue with id 1!`);
-  //     } else {
-  //       console.log("Document updated");
-  //       return res.status(200).send(req.body);
-  //     }
-  //   });
-  // }
 
   if (
     !updateObject.hasOwnProperty("venue_name") &&

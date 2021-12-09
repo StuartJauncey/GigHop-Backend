@@ -3,9 +3,34 @@ const dbo = require("../connection");
 
 exports.getAllEvents = (req, res) => {
   const dbConnect = dbo.getDb();
-  dbConnect.collection("Events").find({}).toArray((err, result) => {
-    res.json(result);
-  });
+  let defaultDay = new Date(new Date().setHours(0, 0, 0, 0));
+  let day2 = new Date(defaultDay.getTime() + 1000 * 60 * 60 * 24);
+  if (req.query.filter_by) {
+    defaultDay = new Date(req.query.filter_by);
+    day2 = new Date(defaultDay.getTime() + 1000 * 60 * 60 * 24);
+  }
+  let query = req.query;
+  if (req.query.sort_by || req.query.filter_by) {
+    return dbConnect
+      .collection("Events")
+      .find({
+        time_start: {
+          $gte: new Date(defaultDay),
+          $lt: new Date(day2)
+        }
+      })
+      .sort({ [query.sort_by]: -1 })
+      .toArray((err, result) => {
+        return res.json(result);
+      });
+  }
+
+  return dbConnect
+    .collection("Events")
+    .find({})
+    .toArray((err, result) => {
+      return res.json(result);
+    });
 };
 
 exports.getEvent = (req, res) => {

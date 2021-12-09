@@ -5,8 +5,6 @@ const client = new MongoClient(ConnectionString, {
   useUnifiedTopology: true
 });
 
-console.log(process.env.ATLAS_URI);
-
 let dbConnection;
 
 module.exports = {
