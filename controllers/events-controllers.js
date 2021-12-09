@@ -13,12 +13,27 @@ exports.getAllEvents = (req, res) => {
   if (req.query.sort_by || req.query.filter_by) {
     return dbConnect
       .collection("Events")
-      .find({
-        time_start: {
-          $gte: new Date(defaultDay),
-          $lt: new Date(day2)
+      .aggregate([
+        {
+          $addFields: { venue_id: { $toObjectId: "$venue_id" } }
+        },
+        {
+          $match: {
+            time_start: {
+              $gte: new Date(defaultDay),
+              $lt: new Date(day2)
+            }
+          }
+        },
+        {
+          $lookup: {
+            from: "Venues",
+            localField: "venue_id",
+            foreignField: "_id",
+            as: "venue_info"
+          }
         }
-      })
+      ])
       .sort({ [query.sort_by]: -1 })
       .toArray((err, result) => {
         return res.json(result);
