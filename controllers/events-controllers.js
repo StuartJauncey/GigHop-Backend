@@ -65,9 +65,26 @@ exports.getEvent = (req, res) => {
   const id = req.params.event_id;
   dbConnect
     .collection("Events")
-    .findOne({ _id: ObjectId(id) })
-    .then(result => {
-      return res.status(200).send(result);
+    .aggregate([
+      {
+        $addFields: { venue_id: { $toObjectId: "$venue_id" } }
+      },
+      {
+        $match: {
+          _id: ObjectId(id)
+        }
+      },
+      {
+        $lookup: {
+          from: "Venues",
+          localField: "venue_id",
+          foreignField: "_id",
+          as: "venue_info"
+        }
+      }
+    ])
+    .toArray((err, result) => {
+      return res.json(result);
     });
 };
 
