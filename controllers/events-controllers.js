@@ -42,7 +42,19 @@ exports.getAllEvents = (req, res) => {
 
   return dbConnect
     .collection("Events")
-    .find({})
+    .aggregate([
+      {
+        $addFields: { venue_id: { $toObjectId: "$venue_id" } }
+      },
+      {
+        $lookup: {
+          from: "Venues",
+          localField: "venue_id",
+          foreignField: "_id",
+          as: "venue_info"
+        }
+      }
+    ])
     .toArray((err, result) => {
       return res.json(result);
     });
