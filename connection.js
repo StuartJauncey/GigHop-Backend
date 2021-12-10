@@ -1,4 +1,5 @@
 const { MongoClient } = require("mongodb");
+// Connect to Heroku
 const ConnectionString = process.env.MONGODB_URI;
 const client = new MongoClient(ConnectionString, {
   useNewUrlParser: true,
