@@ -20,7 +20,7 @@ exports.getAllEvents = (req, res) => {
         },
         {
           $match: {
-            time_start: {
+            time_end: {
               $gte: new Date(defaultDay),
               $lt: new Date(day2)
             }
