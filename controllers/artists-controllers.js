@@ -73,6 +73,57 @@ exports.patchArtist = async (req, res) => {
   const dbConnect = dbo.getDb();
   const id = req.params.artist_id;
   const updatedArtist = req.body;
+  let artist;
+
+  await dbConnect
+    .collection("Artists")
+    .findOne({ _id: ObjectId(id) })
+    .then(result => {
+      artist = result;
+    });
+  console.log(artist);
+  console.log(updatedArtist);
+
+  if (updatedArtist.hasOwnProperty("add_event")) {
+    for (let i = 0; i < artist.upcoming_events.length; i++) {
+      if (
+        artist.upcoming_events[i].event_id ===
+        updatedArtist.add_event.event_id
+      ) {
+        return res.status(400).send("event already in there");
+      }
+    }
+    return await dbConnect.collection("Artists").updateOne({
+      _id: ObjectId(id)
+    }, {
+      $push: {
+        upcoming_events: updatedArtist.add_event
+      }
+    }, function(err, _result) {
+      if (err) {
+        return res.status(400).send(`Error updating events on user`);
+      } else {
+        console.log("Event added to artist");
+        return res.status(200).send(updatedArtist.add_event);
+      }
+    });
+  }
+
+  if (updatedArtist.hasOwnProperty("remove_event")) {
+    return await dbConnect.collection("Artists").findOneAndUpdate({
+      _id: ObjectId(id)
+    }, {
+      $pull: {
+        upcoming_events: updatedArtist.remove_event
+      }
+    }, function(err, _result) {
+      if (err) {
+        return res.status(400).send("Error removing event");
+      } else {
+        return res.status(200).send();
+      }
+    });
+  }
 
   if (
     updatedArtist.hasOwnProperty("artist_name") ||

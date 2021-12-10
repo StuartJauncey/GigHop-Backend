@@ -3,8 +3,9 @@ const dbo = require("../connection");
 
 exports.getAllEvents = (req, res) => {
   const dbConnect = dbo.getDb();
-  let defaultDay = new Date(new Date().setHours(0, 0, 0, 0));
+  let defaultDay = new Date(new Date().setHours(5, 0, 0, 0));
   let day2 = new Date(defaultDay.getTime() + 1000 * 60 * 60 * 24);
+  console.log(defaultDay, day2);
   if (req.query.filter_by) {
     defaultDay = new Date(req.query.filter_by);
     day2 = new Date(defaultDay.getTime() + 1000 * 60 * 60 * 24);
