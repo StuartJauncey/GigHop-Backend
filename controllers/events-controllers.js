@@ -92,6 +92,7 @@ exports.getEvent = (req, res) => {
 exports.postNewEvent = async (req, res) => {
   const dbConnect = dbo.getDb();
   const newObj = req.body;
+  console.log(newObj);
   const expectedKeys = [
     "event_name",
     "entry_price",
