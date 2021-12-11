@@ -1,6 +1,7 @@
 const { MongoClient } = require("mongodb");
 // Connect to Heroku
 const ConnectionString = process.env.MONGODB_URI;
+// const ConnectionString = process.env.ATLAS_URI;
 const client = new MongoClient(ConnectionString, {
   useNewUrlParser: true,
   useUnifiedTopology: true
