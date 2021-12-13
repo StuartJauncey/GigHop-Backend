@@ -11,12 +11,9 @@ exports.getAllUsers = (req, res) => {
 exports.getUser = (req, res) => {
   const dbConnect = dbo.getDb();
   const id = req.params.user_id;
-  dbConnect
-    .collection("Users")
-    .findOne({ _id: ObjectId(id) })
-    .then(result => {
-      return res.status(200).send(result);
-    });
+  dbConnect.collection("Users").findOne({ _id: id }).then(result => {
+    return res.status(200).send(result);
+  });
 };
 
 exports.postNewUser = async (req, res) => {
