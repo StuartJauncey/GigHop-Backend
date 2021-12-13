@@ -46,7 +46,8 @@ exports.postNewUser = async (req, res) => {
         res.status(400).send("Error inserting new user");
       } else {
         console.log(`added a new user with if ${result.insertedId}`);
-        res.status(204).send(newObj);
+        console.log(result);
+        res.status(200).send(result.insertedId);
       }
     });
 };
