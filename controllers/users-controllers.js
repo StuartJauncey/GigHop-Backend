@@ -89,7 +89,7 @@ exports.patchUsers = async (req, res) => {
       }
     }
     return await dbConnect.collection("Users").updateOne({
-      _id: ObjectId(id)
+      _id: id
     }, {
       $push: {
         events: updateObject.add_event
@@ -106,7 +106,7 @@ exports.patchUsers = async (req, res) => {
 
   if (updateObject.hasOwnProperty("remove_event")) {
     return await dbConnect.collection("Users").findOneAndUpdate({
-      _id: ObjectId(id)
+      _id: id
     }, {
       $pull: {
         events: updateObject.remove_event
