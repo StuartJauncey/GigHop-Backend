@@ -23,7 +23,7 @@ exports.postNewUser = async (req, res) => {
   const dbConnect = dbo.getDb();
   const newObj = req.body;
   const expectedKeys = [
-    "username",
+    "_id",
     "picture",
     "artist",
     "venue",
