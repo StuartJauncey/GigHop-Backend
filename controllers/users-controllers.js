@@ -76,7 +76,7 @@ exports.patchUsers = async (req, res) => {
 
   await dbConnect
     .collection("Users")
-    .findOne({ _id: ObjectId(id) })
+    .findOne({ _id: id })
     .then(result => {
       user = result;
     });
