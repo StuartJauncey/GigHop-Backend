@@ -92,12 +92,7 @@ exports.getEvent = (req, res) => {
 exports.postNewEvent = async (req, res) => {
   const dbConnect = dbo.getDb();
   const newObj = req.body;
-  const startTime = new Date(newObj.time_start);
-  const endTime = new Date(newObj.time_end);
-
-  newObj.time_start = startTime;
-  newObj.time_end = endTime;
-  
+  console.log(newObj);
   const expectedKeys = [
     "event_name",
     "entry_price",
@@ -128,7 +123,6 @@ exports.postNewEvent = async (req, res) => {
       } else {
         console.log(`Added a new match with id ${result.insertedId}`);
         res.status(204).send(newObj);
-        
       }
     });
 };
