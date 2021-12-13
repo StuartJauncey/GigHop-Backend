@@ -8,7 +8,9 @@ exports.getAllEvents = (req, res) => {
   console.log(defaultDay, day2);
   if (req.query.filter_by) {
     defaultDay = new Date(req.query.filter_by);
-    day2 = new Date(defaultDay.getTime() + 1000 * 60 * 60 * 24);
+    day2 = new Date(
+      defaultDay.getTime() + 1000 * 60 * 60 * 24
+    ).setHours(5, 0, 0, 0);
   }
   let query = req.query;
   if (req.query.sort_by || req.query.filter_by) {
