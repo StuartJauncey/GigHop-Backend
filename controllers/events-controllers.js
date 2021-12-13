@@ -128,7 +128,7 @@ exports.postNewEvent = async (req, res) => {
         res.status(400).send("Error inserting matches!");
       } else {
         console.log(`Added a new match with id ${result.insertedId}`);
-        res.status(200).send(newObj);
+        res.status(200).send(result.insertedId);
       }
     });
 };
