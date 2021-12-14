@@ -104,6 +104,32 @@ exports.patchUsers = async (req, res) => {
     });
   }
 
+  if (updateObject.hasOwnProperty("is_artist")) {
+    return await dbConnect.collection("Users").updateOne({
+      _id: id
+    }, { $set: updateObject.is_artist }, function(err, _result) {
+      if (err) {
+        res.status(400).send("cannot update");
+      } else {
+        console.log("User updated");
+        res.status(200).send(req.body);
+      }
+    });
+  }
+
+  if (updateObject.hasOwnProperty("is_venue")) {
+    return await dbConnect.collection("Users").updateOne({
+      _id: id
+    }, { $set: updateObject.is_venue }, function(err, _result) {
+      if (err) {
+        res.status(400).send("cannot update");
+      } else {
+        console.log("User updated");
+        res.status(200).send(req.body);
+      }
+    });
+  }
+
   if (updateObject.hasOwnProperty("remove_event")) {
     return await dbConnect.collection("Users").findOneAndUpdate({
       _id: id
