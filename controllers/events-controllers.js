@@ -94,6 +94,10 @@ exports.getEvent = (req, res) => {
 exports.postNewEvent = async (req, res) => {
   const dbConnect = dbo.getDb();
   const newObj = req.body;
+  if (!newObj.picture) {
+    newObj.picture =
+      "https://jollycontrarian.com/images/thumb/a/a4/Andrex.jpg/450px-Andrex.jpg";
+  }
 
   const startTime = new Date(newObj.time_start);
   const endTime = new Date(newObj.time_end);
